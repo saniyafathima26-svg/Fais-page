@@ -6,14 +6,65 @@
 <title>Sukoon</title>
 
 <style>
+  :root{
+    --glass: rgba(255,255,255,0.045);
+    --glassBorder: rgba(255,255,255,0.14);
+    --shadow: rgba(0,0,0,0.70);
+  }
+
+  *{ box-sizing:border-box; }
+
   body{
     margin:0;
     height:100vh;
     background: radial-gradient(circle at top, #141414, #000);
-    font-family:"Segoe UI", Arial, sans-serif;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color:#fff;
     overflow:hidden;
     position:relative;
+    letter-spacing: 0.2px;
+  }
+
+  /* Soft animated aura background (adds depth, removes "plain") */
+  body::before,
+  body::after{
+    content:"";
+    position:absolute;
+    inset:-220px;
+    background:
+      radial-gradient(600px 420px at 20% 18%, rgba(255,255,255,0.08), transparent 60%),
+      radial-gradient(760px 520px at 82% 72%, rgba(255,0,80,0.10), transparent 65%),
+      radial-gradient(680px 480px at 50% 92%, rgba(80,160,255,0.08), transparent 65%);
+    filter: blur(18px);
+    opacity:0.9;
+    z-index:0;
+    animation: floatGlow 10s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+
+  body::after{
+    opacity:0.55;
+    animation-duration: 14s;
+  }
+
+  @keyframes floatGlow{
+    from{ transform: translate3d(-2%, -1%, 0) scale(1); }
+    to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
+  }
+
+  /* Pages + classy transition */
+  .page{
+    display:none;
+    opacity:0;
+    transform: translateY(10px) scale(0.99);
+    transition: opacity .35s ease, transform .35s ease;
+    position:relative;
+    z-index:1;
+  }
+  .page.active{
+    display:block;
+    opacity:1;
+    transform: translateY(0px) scale(1);
   }
 
   .card{
@@ -21,35 +72,60 @@
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    width:min(720px, 92vw);
-    padding:52px 34px;
-    border-radius:26px;
+    width:min(740px, 92vw);
+    padding:56px 40px;
+    border-radius:28px;
     text-align:center;
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.12);
-    backdrop-filter:blur(12px);
-    box-shadow:0 20px 60px rgba(0,0,0,0.65);
+
+    background:
+      radial-gradient(1200px 500px at 30% 0%, rgba(255,255,255,0.10), transparent 55%),
+      radial-gradient(900px 450px at 80% 120%, rgba(255,255,255,0.06), transparent 60%),
+      var(--glass);
+
+    border:1px solid var(--glassBorder);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+
+    box-shadow:
+      0 30px 90px var(--shadow),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+
     z-index:2;
   }
 
-  h1,h2{ margin:0 0 26px; font-weight:800; }
-  p{ margin:8px 0; opacity:0.95; }
+  h1,h2{
+    margin:0 0 18px;
+    font-weight:800;
+    line-height:1.12;
+    letter-spacing:-0.6px;
+    opacity:0.98;
+  }
+
+  h2{ font-size: clamp(22px, 2.2vw, 30px); }
+  h1{ font-size: clamp(28px, 3vw, 40px); }
+
+  p{
+    margin:10px 0 0;
+    opacity:0.82;
+    font-size:16px;
+    line-height:1.5;
+  }
 
   .btn-row{
     display:flex;
     justify-content:center;
     align-items:center;
     gap:22px;
-    margin-top:10px;
+    margin-top:16px;
     position:relative;
     z-index:2;
   }
 
   .btn{
-    padding:16px 42px;
+    padding:16px 44px;
     border:none;
     border-radius:999px;
-    font-size:18px;
+    font-size:16.5px;
     cursor:pointer;
     user-select:none;
     min-width:220px;
@@ -57,14 +133,26 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    letter-spacing:.2px;
-    box-sizing:border-box;
+    letter-spacing:0.6px;
+    text-transform: uppercase;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+
+  .btn:hover{
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+
+  .btn:active{
+    transform: translateY(0px) scale(0.98);
   }
 
   .stable{
-    background:#fff;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.90));
     color:#111;
-    box-shadow:0 10px 24px rgba(255,255,255,0.12);
+    box-shadow:
+      0 16px 40px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
   /* moving button */
@@ -76,21 +164,22 @@
   }
 
   .red{
-    background:linear-gradient(45deg,#ff2b2b,#ff6b6b);
+    background: linear-gradient(135deg, #ff2b2b, #ff6b6b);
     color:#fff;
-    box-shadow:0 0 28px rgba(255,0,0,0.45);
+    box-shadow:
+      0 18px 55px rgba(255,0,0,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.18);
   }
 
   .white{
-    background:#fff;
+    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.86));
     color:#111;
-    box-shadow:0 10px 24px rgba(255,255,255,0.12);
+    box-shadow:
+      0 16px 40px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.70);
   }
 
-  .page{ display:none; }
-  .page.active{ display:block; }
-
-  /* last page picture */
+  /* Last page picture */
   .sorry-pic{
     width: min(460px, 85vw);
     margin-top: 22px;
@@ -101,10 +190,22 @@
     margin-left:auto;
     margin-right:auto;
     object-fit: cover;
+    transform: translateY(4px);
+    opacity: 0;
+    animation: picIn .6s ease forwards;
   }
 
-  /* p7 content hidden initially */
-  .hidden { display:none; }
+  @keyframes picIn{
+    to{ transform: translateY(0); opacity: 1; }
+  }
+
+  .hidden{ display:none; }
+
+  /* Optional: tiny per-page accent glow (still classy) */
+  #p2 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 80px rgba(255,80,120,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p3 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 80px rgba(80,160,255,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p5 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(255,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p7 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 110px rgba(255,120,180,0.10), inset 0 1px 0 rgba(255,255,255,0.12); }
 </style>
 </head>
 
@@ -159,17 +260,15 @@
 
 <div id="p6" class="page">
   <div class="card">
-    <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :( </h2>
+    <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
     <div class="btn-row">
       <button id="s6" class="btn stable">I SURRENDER</button>
     </div>
   </div>
 </div>
 
-<!-- LAST PAGE: starts blank-ish with only button -->
 <div id="p7" class="page">
   <div class="card">
-    <!-- Step 1: show only this -->
     <div id="p7Prompt">
       <h1>Sorry?</h1>
       <div class="btn-row">
@@ -177,7 +276,6 @@
       </div>
     </div>
 
-    <!-- Step 2: reveal this after click -->
     <div id="p7Reveal" class="hidden">
       <h1>Sorry yaar…</h1>
       <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
@@ -185,7 +283,6 @@
   </div>
 </div>
 
-<!-- Hidden YouTube player: only set src after clicking SORRY -->
 <iframe
   id="ytPlayer"
   width="0"
@@ -202,19 +299,18 @@
   const yt = document.getElementById("ytPlayer");
 
   const flow = [
-    { pageId:"p1", stableId:"s1", movingText:"YES",      movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", movingText:"YES",      movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", movingText:"NO",       movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", movingText:"NO",       movingColor:"red", next:"p5" },
-    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY", movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", movingText:"NEVER",    movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, movingText:"",         movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", movingText:"YES",        movingColor:"red",   next:"p2" },
+    { pageId:"p2", stableId:"s2", movingText:"YES",        movingColor:"red",   next:"p3" },
+    { pageId:"p3", stableId:"s3", movingText:"NO",         movingColor:"white", next:"p4" },
+    { pageId:"p4", stableId:"s4", movingText:"NO",         movingColor:"red",   next:"p5" },
+    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY",  movingColor:"red",   next:"p6" },
+    { pageId:"p6", stableId:"s6", movingText:"NEVER",      movingColor:"white", next:"p7" },
+    { pageId:"p7", stableId:null, movingText:"",           movingColor:"",      next:null }
   ];
 
   let idx = 0;
 
   function resetP7(){
-    // show prompt, hide reveal, stop music
     document.getElementById("p7Prompt").style.display = "block";
     document.getElementById("p7Reveal").classList.add("hidden");
     yt.src = "";
@@ -225,14 +321,13 @@
     idx = newIdx;
     document.getElementById(flow[idx].pageId).classList.add("active");
 
-    // anytime leaving p7, stop song
     if(flow[idx].pageId !== "p7"){
       yt.src = "";
     }
 
     if(flow[idx].pageId === "p7"){
       moveBtn.style.display = "none";
-      resetP7();  // ✅ don’t autoplay on entering p7
+      resetP7();
       return;
     }
 
@@ -278,12 +373,9 @@
     document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
   });
 
-  // ✅ When clicking SORRY on last page: reveal image + start song
   document.getElementById("revealSorry").addEventListener("click", () => {
     document.getElementById("p7Prompt").style.display = "none";
     document.getElementById("p7Reveal").classList.remove("hidden");
-
-    // start music only now
     yt.src = "https://www.youtube.com/embed/jKqCewZvECA?autoplay=1&start=49&end=70";
   });
 
