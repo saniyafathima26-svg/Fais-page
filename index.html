@@ -71,7 +71,7 @@
   .moving{
     position:absolute;
     z-index:9999;
-    left:20px;  /* temporary safe default */
+    left:20px;
     top:20px;
   }
 
@@ -102,6 +102,9 @@
     margin-right:auto;
     object-fit: cover;
   }
+
+  /* p7 content hidden initially */
+  .hidden { display:none; }
 </style>
 </head>
 
@@ -163,16 +166,26 @@
   </div>
 </div>
 
-<!-- LAST PAGE: only "Sorry yaar…" + picture -->
+<!-- LAST PAGE: starts blank-ish with only button -->
 <div id="p7" class="page">
   <div class="card">
-    <h1>Sorry yaar…</h1>
-    <!-- ✅ your real filename from GitHub -->
-    <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
+    <!-- Step 1: show only this -->
+    <div id="p7Prompt">
+      <h1>Sorry?</h1>
+      <div class="btn-row">
+        <button id="revealSorry" class="btn stable">SORRY</button>
+      </div>
+    </div>
+
+    <!-- Step 2: reveal this after click -->
+    <div id="p7Reveal" class="hidden">
+      <h1>Sorry yaar…</h1>
+      <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
+    </div>
   </div>
 </div>
 
-<!-- Hidden YouTube player: plays from 49s to 70s on last page -->
+<!-- Hidden YouTube player: only set src after clicking SORRY -->
 <iframe
   id="ytPlayer"
   width="0"
@@ -186,6 +199,7 @@
 
 <script>
   const moveBtn = document.getElementById("moveBtn");
+  const yt = document.getElementById("ytPlayer");
 
   const flow = [
     { pageId:"p1", stableId:"s1", movingText:"YES",      movingColor:"red",   next:"p2" },
@@ -199,26 +213,33 @@
 
   let idx = 0;
 
+  function resetP7(){
+    // show prompt, hide reveal, stop music
+    document.getElementById("p7Prompt").style.display = "block";
+    document.getElementById("p7Reveal").classList.add("hidden");
+    yt.src = "";
+  }
+
   function showPage(newIdx){
     document.getElementById(flow[idx].pageId).classList.remove("active");
     idx = newIdx;
     document.getElementById(flow[idx].pageId).classList.add("active");
 
-    const yt = document.getElementById("ytPlayer");
+    // anytime leaving p7, stop song
+    if(flow[idx].pageId !== "p7"){
+      yt.src = "";
+    }
 
     if(flow[idx].pageId === "p7"){
       moveBtn.style.display = "none";
-      yt.src = "https://www.youtube.com/embed/jKqCewZvECA?autoplay=1&start=49&end=70";
+      resetP7();  // ✅ don’t autoplay on entering p7
       return;
     }
-
-    yt.src = "";
 
     moveBtn.style.display = "flex";
     moveBtn.textContent = flow[idx].movingText;
     moveBtn.classList.remove("red","white");
     moveBtn.classList.add(flow[idx].movingColor);
-
     requestAnimationFrame(() => requestAnimationFrame(placeMovingPerfectly));
   }
 
@@ -255,6 +276,15 @@
 
   flow.slice(0,6).forEach((step, i) => {
     document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
+  });
+
+  // ✅ When clicking SORRY on last page: reveal image + start song
+  document.getElementById("revealSorry").addEventListener("click", () => {
+    document.getElementById("p7Prompt").style.display = "none";
+    document.getElementById("p7Reveal").classList.remove("hidden");
+
+    // start music only now
+    yt.src = "https://www.youtube.com/embed/jKqCewZvECA?autoplay=1&start=49&end=70";
   });
 
   window.addEventListener("load", () => {
