@@ -89,6 +89,19 @@
 
   .page{ display:none; }
   .page.active{ display:block; }
+
+  /* last page picture */
+  .sorry-pic{
+    width: min(460px, 85vw);
+    margin-top: 22px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    object-fit: cover;
+  }
 </style>
 </head>
 
@@ -116,7 +129,7 @@
 
 <div id="p3" class="page">
   <div class="card">
-    <h2>Do you love listening to me?</h2>
+    <h2>Do you think you listen to me?</h2>
     <div class="btn-row">
       <button id="s3" class="btn stable">YES</button>
     </div>
@@ -134,7 +147,7 @@
 
 <div id="p5" class="page">
   <div class="card">
-    <h2>Sani’s way or Fais's way?</h2>
+    <h2>Sani’s way or your way?</h2>
     <div class="btn-row">
       <button id="s5" class="btn stable">SANI’S WAY</button>
     </div>
@@ -143,28 +156,33 @@
 
 <div id="p6" class="page">
   <div class="card">
-    <h2>Faisss, Aap convince ho gaye ki mai aur bolun?</h2>
+    <h2>Faisss, ab convince ho gaye ki mai aur bolun?</h2>
     <div class="btn-row">
       <button id="s6" class="btn stable">I SURRENDER</button>
     </div>
   </div>
 </div>
 
+<!-- LAST PAGE: only "Sorry yaar…" + picture -->
 <div id="p7" class="page">
   <div class="card">
     <h1>Sorry yaar…</h1>
-    <p>Maff kardallo 🥺</p>
-
-    <div style="margin-top:22px;">
-      <iframe width="100%" height="240"
-        src="https://www.youtube.com/embed/EatzcaVJRMs?autoplay=1"
-        allow="autoplay; encrypted-media"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
-    </div>
+    <!-- ✅ your real filename from GitHub -->
+    <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
   </div>
 </div>
+
+<!-- Hidden YouTube player: plays from 49s to 70s on last page -->
+<iframe
+  id="ytPlayer"
+  width="0"
+  height="0"
+  style="position:absolute; left:-9999px; top:-9999px;"
+  src=""
+  allow="autoplay; encrypted-media"
+  frameborder="0"
+  allowfullscreen>
+</iframe>
 
 <script>
   const moveBtn = document.getElementById("moveBtn");
@@ -174,7 +192,7 @@
     { pageId:"p2", stableId:"s2", movingText:"YES",      movingColor:"red",   next:"p3" },
     { pageId:"p3", stableId:"s3", movingText:"NO",       movingColor:"white", next:"p4" },
     { pageId:"p4", stableId:"s4", movingText:"NO",       movingColor:"white", next:"p5" },
-    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY", movingColor:"red",   next:"p6" },
+    { pageId:"p5", stableId:"s5", movingText:"YOUR WAY", movingColor:"red",   next:"p6" },
     { pageId:"p6", stableId:"s6", movingText:"NEVER",    movingColor:"white", next:"p7" },
     { pageId:"p7", stableId:null, movingText:"",         movingColor:"",      next:null }
   ];
@@ -186,19 +204,21 @@
     idx = newIdx;
     document.getElementById(flow[idx].pageId).classList.add("active");
 
+    const yt = document.getElementById("ytPlayer");
+
     if(flow[idx].pageId === "p7"){
       moveBtn.style.display = "none";
+      yt.src = "https://www.youtube.com/embed/jKqCewZvECA?autoplay=1&start=49&end=70";
       return;
     }
 
-    moveBtn.style.display = "flex";
+    yt.src = "";
 
-    // 1) set text + color FIRST (so it gets correct width)
+    moveBtn.style.display = "flex";
     moveBtn.textContent = flow[idx].movingText;
     moveBtn.classList.remove("red","white");
     moveBtn.classList.add(flow[idx].movingColor);
 
-    // 2) place after layout (2 frames = reliable)
     requestAnimationFrame(() => requestAnimationFrame(placeMovingPerfectly));
   }
 
@@ -221,7 +241,6 @@
     moveBtn.style.top  = y + "px";
   }
 
-  // move ONLY when clicked/touched
   function moveAway(){
     const maxX = window.innerWidth - moveBtn.offsetWidth - 12;
     const maxY = window.innerHeight - moveBtn.offsetHeight - 12;
@@ -234,13 +253,11 @@
     moveAway();
   });
 
-  // stable buttons go next page
   flow.slice(0,6).forEach((step, i) => {
     document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
   });
 
   window.addEventListener("load", () => {
-    // initialize properly
     moveBtn.style.display = "flex";
     moveBtn.textContent = flow[0].movingText;
     moveBtn.classList.add(flow[0].movingColor);
