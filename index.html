@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,10 +14,11 @@
   }
 
   *{ box-sizing:border-box; }
+  html,body{ height:100%; }
 
   body{
     margin:0;
-    height:100vh;
+    min-height:100vh;
     background: radial-gradient(circle at top, #141414, #000);
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color:#fff;
@@ -25,61 +27,104 @@
     letter-spacing: 0.2px;
   }
 
-  /* Soft animated aura background (adds depth, removes "plain") */
+  /* Soft animated aura background */
   body::before,
   body::after{
     content:"";
     position:absolute;
-    inset:-220px;
+    inset:-240px;
     background:
-      radial-gradient(600px 420px at 20% 18%, rgba(255,255,255,0.08), transparent 60%),
-      radial-gradient(760px 520px at 82% 72%, rgba(255,0,80,0.10), transparent 65%),
-      radial-gradient(680px 480px at 50% 92%, rgba(80,160,255,0.08), transparent 65%);
+      radial-gradient(700px 520px at 18% 18%, rgba(255,255,255,0.09), transparent 62%),
+      radial-gradient(900px 620px at 82% 72%, rgba(255,0,80,0.12), transparent 67%),
+      radial-gradient(820px 560px at 50% 92%, rgba(80,160,255,0.10), transparent 67%);
     filter: blur(18px);
     opacity:0.9;
     z-index:0;
     animation: floatGlow 10s ease-in-out infinite alternate;
     pointer-events:none;
   }
-
   body::after{
     opacity:0.55;
     animation-duration: 14s;
   }
-
   @keyframes floatGlow{
     from{ transform: translate3d(-2%, -1%, 0) scale(1); }
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
   }
 
-  /* Pages + classy transition */
+  /* Subtle film grain (classy) */
+  .grain{
+    position:absolute;
+    inset:-30%;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+    opacity:.06;
+    mix-blend-mode: overlay;
+    pointer-events:none;
+    z-index:1;
+    animation: grainMove 6s steps(2,end) infinite;
+  }
+  @keyframes grainMove{
+    0%{ transform: translate(0,0); }
+    25%{ transform: translate(-2%, 1%); }
+    50%{ transform: translate(1%, -2%); }
+    75%{ transform: translate(2%, 2%); }
+    100%{ transform: translate(0,0); }
+  }
+
+  /* Sparkles */
+  .sparkles{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+  }
+  .sparkle{
+    position:absolute;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.9);
+    filter: blur(.2px);
+    opacity:0.0;
+    animation: twinkle 3.8s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:0; transform: scale(.6); }
+    35%{ opacity:.9; transform: scale(1); }
+    55%{ opacity:.2; transform: scale(.8); }
+  }
+
+  /* Pages (fixed to viewport) */
   .page{
-    display:none;
-    opacity:0;
+    position: fixed;
+    inset: 0;
+    display: none;
+    opacity: 0;
     transform: translateY(10px) scale(0.99);
     transition: opacity .35s ease, transform .35s ease;
-    position:relative;
-    z-index:1;
+    align-items: center;
+    justify-content: center;
+    padding: 46px 18px;
+    z-index:2;
   }
   .page.active{
-    display:block;
-    opacity:1;
-    transform: translateY(0px) scale(1);
+    display: flex;
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
+  /* Card - premium glass */
   .card{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:min(740px, 92vw);
-    padding:56px 40px;
-    border-radius:28px;
+    width:min(760px, 92vw);
+    padding:58px 42px;
+    border-radius:30px;
     text-align:center;
+    position: relative;
 
     background:
-      radial-gradient(1200px 500px at 30% 0%, rgba(255,255,255,0.10), transparent 55%),
-      radial-gradient(900px 450px at 80% 120%, rgba(255,255,255,0.06), transparent 60%),
+      radial-gradient(1200px 500px at 30% 0%, rgba(255,255,255,0.11), transparent 55%),
+      radial-gradient(900px 450px at 80% 120%, rgba(255,255,255,0.07), transparent 60%),
       var(--glass);
 
     border:1px solid var(--glassBorder);
@@ -89,26 +134,43 @@
     box-shadow:
       0 30px 90px var(--shadow),
       inset 0 1px 0 rgba(255,255,255,0.12);
+  }
 
-    z-index:2;
+  /* Elegant top highlight */
+  .card::before{
+    content:"";
+    position:absolute;
+    inset: 0;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 35%);
+    pointer-events:none;
+  }
+
+  /* Cinematic intro for each card */
+  .page.active .card{
+    animation: cardIn .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes cardIn{
+    from{ opacity:0; transform: translateY(12px) scale(.985); }
+    to  { opacity:1; transform: translateY(0) scale(1); }
   }
 
   h1,h2{
     margin:0 0 18px;
-    font-weight:800;
+    font-weight:850;
     line-height:1.12;
-    letter-spacing:-0.6px;
+    letter-spacing:-0.7px;
     opacity:0.98;
   }
-
   h2{ font-size: clamp(22px, 2.2vw, 30px); }
-  h1{ font-size: clamp(28px, 3vw, 40px); }
+  h1{ font-size: clamp(28px, 3vw, 42px); }
 
-  p{
-    margin:10px 0 0;
-    opacity:0.82;
-    font-size:16px;
-    line-height:1.5;
+  .sub{
+    margin: 10px auto 0;
+    max-width: 560px;
+    opacity:0.78;
+    line-height:1.55;
+    font-size: 15.5px;
   }
 
   .btn-row{
@@ -116,33 +178,37 @@
     justify-content:center;
     align-items:center;
     gap:22px;
-    margin-top:16px;
+    margin-top:18px;
     position:relative;
-    z-index:2;
+    z-index:3;
+    flex-wrap: wrap;
   }
 
   .btn{
     padding:16px 44px;
     border:none;
     border-radius:999px;
-    font-size:16.5px;
+    font-size:16.2px;
     cursor:pointer;
     user-select:none;
     min-width:220px;
     height:62px;
+
     display:flex;
     align-items:center;
     justify-content:center;
-    letter-spacing:0.6px;
+
+    letter-spacing:0.65px;
     text-transform: uppercase;
+
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    will-change: transform;
   }
 
   .btn:hover{
     transform: translateY(-2px);
     filter: brightness(1.05);
   }
-
   .btn:active{
     transform: translateY(0px) scale(0.98);
   }
@@ -155,13 +221,27 @@
       inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* moving button */
+  /* Moving button (smooth + classy) */
   .moving{
-    position:absolute;
-    z-index:9999;
-    left:20px;
-    top:20px;
+    position: fixed;      /* ✅ important: independent of page layout */
+    z-index: 9999;
+    left: 20px;
+    top: 20px;
+    transform: translate3d(0,0,0);
+    transition: transform .22s ease, filter .18s ease;
   }
+
+  .moving::after{
+    content:"";
+    position:absolute;
+    inset:-18px;
+    border-radius:999px;
+    background: radial-gradient(circle, rgba(255,255,255,.16), transparent 65%);
+    opacity:0;
+    transition: opacity .2s ease;
+    pointer-events:none;
+  }
+  .moving:hover::after{ opacity:1; }
 
   .red{
     background: linear-gradient(135deg, #ff2b2b, #ff6b6b);
@@ -179,7 +259,7 @@
       inset 0 1px 0 rgba(255,255,255,0.70);
   }
 
-  /* Last page picture */
+  /* last page picture */
   .sorry-pic{
     width: min(460px, 85vw);
     margin-top: 22px;
@@ -190,125 +270,164 @@
     margin-left:auto;
     margin-right:auto;
     object-fit: cover;
-    transform: translateY(4px);
+    transform: translateY(10px) scale(.99);
     opacity: 0;
-    animation: picIn .6s ease forwards;
+    animation: picIn .75s cubic-bezier(.2,.8,.2,1) forwards;
   }
-
   @keyframes picIn{
-    to{ transform: translateY(0); opacity: 1; }
+    to{ transform: translateY(0) scale(1); opacity: 1; }
   }
 
-  .hidden{ display:none; }
+  /* p7 content hidden initially */
+  .hidden { display:none; }
 
-  /* Optional: tiny per-page accent glow (still classy) */
-  #p2 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 80px rgba(255,80,120,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p3 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 80px rgba(80,160,255,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p5 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(255,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p7 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 110px rgba(255,120,180,0.10), inset 0 1px 0 rgba(255,255,255,0.12); }
+  /* Optional per-page accents */
+  #p2 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(255,80,120,0.09), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p3 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(80,160,255,0.09), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p5 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 100px rgba(255,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
+  #p7 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 130px rgba(255,120,180,0.12), inset 0 1px 0 rgba(255,255,255,0.12); }
 </style>
 </head>
 
 <body>
+  <div class="grain"></div>
 
-<button id="moveBtn" class="btn moving"></button>
+  <div class="sparkles" id="sparkles"></div>
 
-<div id="p1" class="page active">
-  <div class="card">
-    <h2>Do you really think you can find Sukoon without my bakbak?</h2>
-    <div class="btn-row">
-      <button id="s1" class="btn stable">NO</button>
-    </div>
-  </div>
-</div>
+  <button id="moveBtn" class="btn moving"></button>
 
-<div id="p2" class="page">
-  <div class="card">
-    <h2>Are you angry with me?</h2>
-    <div class="btn-row">
-      <button id="s2" class="btn stable">NO</button>
-    </div>
-  </div>
-</div>
-
-<div id="p3" class="page">
-  <div class="card">
-    <h2>Do you think you listen to me?</h2>
-    <div class="btn-row">
-      <button id="s3" class="btn stable">YES</button>
-    </div>
-  </div>
-</div>
-
-<div id="p4" class="page">
-  <div class="card">
-    <h2>Am I your favourite?</h2>
-    <div class="btn-row">
-      <button id="s4" class="btn stable">YES</button>
-    </div>
-  </div>
-</div>
-
-<div id="p5" class="page">
-  <div class="card">
-    <h2>Sani’s way or Fais's way?</h2>
-    <div class="btn-row">
-      <button id="s5" class="btn stable">SANI’S WAY</button>
-    </div>
-  </div>
-</div>
-
-<div id="p6" class="page">
-  <div class="card">
-    <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
-    <div class="btn-row">
-      <button id="s6" class="btn stable">I SURRENDER</button>
-    </div>
-  </div>
-</div>
-
-<div id="p7" class="page">
-  <div class="card">
-    <div id="p7Prompt">
-      <h1>Sorry?</h1>
+  <div id="p1" class="page active">
+    <div class="card">
+      <h2>Do you really think you can find Sukoon without my bakbak?</h2>
+      <p class="sub">Choose wisely. One button loves you. One button fears you.</p>
       <div class="btn-row">
-        <button id="revealSorry" class="btn stable">SORRY</button>
+        <button id="s1" class="btn stable">NO</button>
       </div>
     </div>
+  </div>
 
-    <div id="p7Reveal" class="hidden">
-      <h1>Sorry yaar…</h1>
-      <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
+  <div id="p2" class="page">
+    <div class="card">
+      <h2>Are you angry with me?</h2>
+      <p class="sub">Be honest. I can tell. 🙂</p>
+      <div class="btn-row">
+        <button id="s2" class="btn stable">NO</button>
+      </div>
     </div>
   </div>
-</div>
 
-<iframe
-  id="ytPlayer"
-  width="0"
-  height="0"
-  style="position:absolute; left:-9999px; top:-9999px;"
-  src=""
-  allow="autoplay; encrypted-media"
-  frameborder="0"
-  allowfullscreen>
-</iframe>
+  <div id="p3" class="page">
+    <div class="card">
+      <h2>Do you think you listen to me?</h2>
+      <p class="sub">Answer carefully… there’s a correct answer.</p>
+      <div class="btn-row">
+        <button id="s3" class="btn stable">YES</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="p4" class="page">
+    <div class="card">
+      <h2>Am I your favourite?</h2>
+      <p class="sub">No pressure. (Full pressure.)</p>
+      <div class="btn-row">
+        <button id="s4" class="btn stable">YES</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="p5" class="page">
+    <div class="card">
+      <h2>Sani’s way or Fais's way?</h2>
+      <p class="sub">One path leads to peace. One leads to… more questions.</p>
+      <div class="btn-row">
+        <button id="s5" class="btn stable">SANI’S WAY</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="p6" class="page">
+    <div class="card">
+      <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
+      <p class="sub">Ok last chance. Promise. (Maybe.)</p>
+      <div class="btn-row">
+        <button id="s6" class="btn stable">I SURRENDER</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAST PAGE -->
+  <div id="p7" class="page">
+    <div class="card">
+      <div id="p7Prompt">
+        <h1>Sorry?</h1>
+        <p class="sub">Press it. Make it cinematic.</p>
+        <div class="btn-row">
+          <button id="revealSorry" class="btn stable">SORRY</button>
+        </div>
+      </div>
+
+      <div id="p7Reveal" class="hidden">
+        <h1>Sorry yaar…</h1>
+        <p class="sub">Come back. Sukoon is waiting.</p>
+        <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube player: only set src after clicking SORRY -->
+  <iframe
+    id="ytPlayer"
+    width="0"
+    height="0"
+    style="position:absolute; left:-9999px; top:-9999px;"
+    src=""
+    allow="autoplay; encrypted-media"
+    frameborder="0"
+    allowfullscreen>
+  </iframe>
 
 <script>
   const moveBtn = document.getElementById("moveBtn");
   const yt = document.getElementById("ytPlayer");
 
+  // sparkles (lightweight, classy)
+  const sparkles = document.getElementById("sparkles");
+  const sparkleCount = 22;
+  for(let i=0;i<sparkleCount;i++){
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = Math.random()*100 + "%";
+    s.style.top  = Math.random()*100 + "%";
+    s.style.animationDelay = (Math.random()*3.2) + "s";
+    s.style.animationDuration = (3 + Math.random()*3) + "s";
+    s.style.opacity = "0";
+    sparkles.appendChild(s);
+  }
+
   const flow = [
-    { pageId:"p1", stableId:"s1", movingText:"YES",        movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", movingText:"YES",        movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", movingText:"NO",         movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", movingText:"NO",         movingColor:"red",   next:"p5" },
-    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY",  movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", movingText:"NEVER",      movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, movingText:"",           movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", movingText:"YES",         movingColor:"red",   next:"p2" },
+    { pageId:"p2", stableId:"s2", movingText:"YES",         movingColor:"red",   next:"p3" },
+    { pageId:"p3", stableId:"s3", movingText:"NO",          movingColor:"white", next:"p4" },
+    { pageId:"p4", stableId:"s4", movingText:"NO",          movingColor:"red",   next:"p5" },
+    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY",   movingColor:"red",   next:"p6" },
+    { pageId:"p6", stableId:"s6", movingText:"NEVER",       movingColor:"white", next:"p7" },
+    { pageId:"p7", stableId:null, movingText:"",            movingColor:"",      next:null }
   ];
 
   let idx = 0;
+
+  // Smooth animation helper (for moving button glide)
+  function animateMoveTo(el, x, y, ms=240){
+    el.animate(
+      [
+        { transform: `translate3d(${el._x||0}px, ${el._y||0}px, 0)` },
+        { transform: `translate3d(${x}px, ${y}px, 0)` }
+      ],
+      { duration: ms, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+    );
+    el._x = x; el._y = y;
+  }
 
   function resetP7(){
     document.getElementById("p7Prompt").style.display = "block";
@@ -321,6 +440,7 @@
     idx = newIdx;
     document.getElementById(flow[idx].pageId).classList.add("active");
 
+    // anytime leaving p7, stop song
     if(flow[idx].pageId !== "p7"){
       yt.src = "";
     }
@@ -335,6 +455,7 @@
     moveBtn.textContent = flow[idx].movingText;
     moveBtn.classList.remove("red","white");
     moveBtn.classList.add(flow[idx].movingColor);
+
     requestAnimationFrame(() => requestAnimationFrame(placeMovingPerfectly));
   }
 
@@ -345,44 +466,93 @@
     const r = stable.getBoundingClientRect();
     const gap = 22;
 
+    // Desired position (beside stable button)
     let x = r.right + gap;
     let y = r.top + (r.height/2) - (moveBtn.offsetHeight/2);
 
-    const maxX = window.innerWidth - moveBtn.offsetWidth - 12;
+    const maxX = window.innerWidth  - moveBtn.offsetWidth  - 12;
     const maxY = window.innerHeight - moveBtn.offsetHeight - 12;
     x = Math.max(12, Math.min(x, maxX));
     y = Math.max(12, Math.min(y, maxY));
 
-    moveBtn.style.left = x + "px";
-    moveBtn.style.top  = y + "px";
+    // Use transform-based positioning for buttery smooth movement
+    animateMoveTo(moveBtn, x, y, 260);
   }
 
-  function moveAway(){
-    const maxX = window.innerWidth - moveBtn.offsetWidth - 12;
-    const maxY = window.innerHeight - moveBtn.offsetHeight - 12;
-    moveBtn.style.left = (12 + Math.random() * (maxX - 12)) + "px";
-    moveBtn.style.top  = (12 + Math.random() * (maxY - 12)) + "px";
+  function moveAwaySmart(pointerX, pointerY){
+    // pick a spot far-ish from pointer, but still inside viewport
+    const pad = 12;
+    const maxX = window.innerWidth  - moveBtn.offsetWidth  - pad;
+    const maxY = window.innerHeight - moveBtn.offsetHeight - pad;
+
+    let best = null;
+
+    // try a few candidates and pick the farthest
+    for(let i=0;i<10;i++){
+      const cx = pad + Math.random() * (maxX - pad);
+      const cy = pad + Math.random() * (maxY - pad);
+      const dx = cx - pointerX;
+      const dy = cy - pointerY;
+      const d2 = dx*dx + dy*dy;
+
+      if(!best || d2 > best.d2) best = {x:cx, y:cy, d2};
+    }
+
+    // add a little overshoot for a "crazy but classy" dodge
+    const ox = best.x + (Math.random()*14 - 7);
+    const oy = best.y + (Math.random()*14 - 7);
+
+    animateMoveTo(moveBtn, ox, oy, 220);
+    // tiny pulse
+    moveBtn.style.filter = "brightness(1.08)";
+    setTimeout(()=> moveBtn.style.filter = "", 160);
   }
 
+  // Magnetic zone + dodge behavior
+  function onPointerMove(e){
+    if(flow[idx].pageId === "p7") return;
+
+    const rect = moveBtn.getBoundingClientRect();
+    const bx = rect.left + rect.width/2;
+    const by = rect.top  + rect.height/2;
+
+    const dx = (e.clientX - bx);
+    const dy = (e.clientY - by);
+    const dist = Math.hypot(dx, dy);
+
+    // if close, flee
+    if(dist < 130){
+      moveAwaySmart(e.clientX, e.clientY);
+    }
+  }
+
+  // When user tries to click/touch it, it jumps away instantly
   moveBtn.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    moveAway();
+    moveAwaySmart(e.clientX, e.clientY);
   });
+
+  // also dodge when cursor moves near it
+  window.addEventListener("pointermove", onPointerMove, { passive:true });
 
   flow.slice(0,6).forEach((step, i) => {
     document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
   });
 
+  // Last page: reveal image + start song
   document.getElementById("revealSorry").addEventListener("click", () => {
     document.getElementById("p7Prompt").style.display = "none";
     document.getElementById("p7Reveal").classList.remove("hidden");
     yt.src = "https://www.youtube.com/embed/jKqCewZvECA?autoplay=1&start=49&end=70";
   });
 
+  // Initial setup
   window.addEventListener("load", () => {
     moveBtn.style.display = "flex";
     moveBtn.textContent = flow[0].movingText;
     moveBtn.classList.add(flow[0].movingColor);
+
+    // Place near the stable button initially
     requestAnimationFrame(() => requestAnimationFrame(placeMovingPerfectly));
   });
 
@@ -393,3 +563,4 @@
 
 </body>
 </html>
+```
