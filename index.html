@@ -25,6 +25,7 @@
     position:relative;
   }
 
+  /* soft aura background */
   body::before,
   body::after{
     content:"";
@@ -46,13 +47,13 @@
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
   }
 
+  /* pages */
   .page{
     position: fixed;
     inset: 0;
     display: none;
     opacity: 0;
-    transform: translateY(10px) scale(0.99);
-    transition: opacity .35s ease, transform .35s ease;
+    transition: opacity .28s ease;
     align-items: center;
     justify-content: center;
     padding: 46px 18px;
@@ -61,9 +62,9 @@
   .page.active{
     display: flex;
     opacity: 1;
-    transform: translateY(0) scale(1);
   }
 
+  /* card */
   .card{
     width:min(820px, 92vw);
     padding:58px 42px;
@@ -89,12 +90,6 @@
     pointer-events:none;
   }
 
-  .page.active .card{ animation: cardIn .6s cubic-bezier(.2,.8,.2,1) both; }
-  @keyframes cardIn{
-    from{ opacity:0; transform: translateY(12px) scale(.985); }
-    to  { opacity:1; transform: translateY(0) scale(1); }
-  }
-
   h1,h2{
     margin:0 0 22px;
     font-weight:800;
@@ -105,7 +100,7 @@
   h2{ font-size: clamp(22px, 2.2vw, 34px); }
   h1{ font-size: clamp(28px, 3vw, 42px); }
 
-  /* ✅ ALWAYS one line, never wrap */
+  /* ✅ always one line, never wrap */
   .btn-row{
     display:flex;
     justify-content:center;
@@ -117,7 +112,7 @@
     flex-wrap: nowrap;
   }
 
-  /* ✅ identical button metrics so both look perfectly aligned */
+  /* ✅ identical metrics (this is what guarantees same-line alignment) */
   .btn{
     width:240px;
     height:64px;
@@ -130,10 +125,9 @@
     align-items:center;
     justify-content:center;
     letter-spacing:.2px;
-    line-height:1;                /* ✅ prevents text baseline differences */
-    padding:0;                    /* ✅ consistent across button types */
+    line-height:1;
+    padding:0;
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-    will-change: transform;
   }
 
   .btn:hover{ transform: translateY(-2px); filter: brightness(1.05); }
@@ -145,18 +139,19 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* ✅ SLOT is ALSO a .btn (same exact box model) */
+  /* ✅ SLOT is ALSO a .btn (same box model), just hidden */
   .slot{
     visibility:hidden;
     pointer-events:none;
   }
 
+  /* Moving button sits EXACTLY over the slot using left/top */
   .moving{
     position: fixed;
     z-index: 9999;
     left: 0;
     top: 0;
-    transform: translate3d(0,0,0);
+    transition: left .18s cubic-bezier(.2,.8,.2,1), top .18s cubic-bezier(.2,.8,.2,1);
   }
 
   .red{
@@ -287,39 +282,24 @@
   const yt = document.getElementById("ytPlayer");
 
   const flow = [
-    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",        movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",        movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",         movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",         movingColor:"red",   next:"p5" },
-    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY", movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",      movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, slotId:null, movingText:"",          movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",        movingColor:"red"   },
+    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",        movingColor:"red"   },
+    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",         movingColor:"white" },
+    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",         movingColor:"red"   },
+    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY", movingColor:"red"   },
+    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",      movingColor:"white" },
+    { pageId:"p7", stableId:null, slotId:null, movingText:"",          movingColor:""      }
   ];
 
   let idx = 0;
 
-  function animateMoveTo(el, x, y, ms=180){
-    el.animate(
-      [
-        { transform: `translate3d(${el._x||0}px, ${el._y||0}px, 0)` },
-        { transform: `translate3d(${x}px, ${y}px, 0)` }
-      ],
-      { duration: ms, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
-    );
-    el._x = x; el._y = y;
-  }
-
   function placeMovingOnSlot(){
-    const slot = document.getElementById(flow[idx].slotId);
-    if(!slot) return;
+    const slotId = flow[idx].slotId;
+    if(!slotId) return;
+    const slot = document.getElementById(slotId);
     const r = slot.getBoundingClientRect();
-    animateMoveTo(moveBtn, Math.round(r.left), Math.round(r.top), 240); /* ✅ pixel-perfect */
-  }
-
-  function resetP7(){
-    document.getElementById("p7Prompt").style.display = "block";
-    document.getElementById("p7Reveal").classList.add("hidden");
-    yt.src = "";
+    moveBtn.style.left = Math.round(r.left) + "px";
+    moveBtn.style.top  = Math.round(r.top)  + "px";
   }
 
   function showPage(newIdx){
@@ -327,11 +307,11 @@
     idx = newIdx;
     document.getElementById(flow[idx].pageId).classList.add("active");
 
-    if(flow[idx].pageId !== "p7"){ yt.src = ""; }
-
+    if(flow[idx].pageId !== "p7") yt.src = "";
     if(flow[idx].pageId === "p7"){
       moveBtn.style.display = "none";
-      resetP7();
+      document.getElementById("p7Prompt").style.display = "block";
+      document.getElementById("p7Reveal").classList.add("hidden");
       return;
     }
 
@@ -340,6 +320,7 @@
     moveBtn.classList.remove("red","white");
     moveBtn.classList.add(flow[idx].movingColor);
 
+    /* ✅ wait for layout to settle, then position (fixes the “not same line” look) */
     requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   }
 
@@ -349,15 +330,15 @@
     const maxY = window.innerHeight - moveBtn.offsetHeight - pad;
 
     let best = null;
-    for(let i=0;i<12;i++){
+    for(let i=0;i<14;i++){
       const x = pad + Math.random() * (maxX - pad);
       const y = pad + Math.random() * (maxY - pad);
-      const dx = x - cx;
-      const dy = y - cy;
+      const dx = x - cx, dy = y - cy;
       const d2 = dx*dx + dy*dy;
-      if(!best || d2 > best.d2) best = {x, y, d2};
+      if(!best || d2 > best.d2) best = {x,y,d2};
     }
-    animateMoveTo(moveBtn, Math.round(best.x), Math.round(best.y), 170);
+    moveBtn.style.left = Math.round(best.x) + "px";
+    moveBtn.style.top  = Math.round(best.y) + "px";
   }
 
   moveBtn.addEventListener("pointerdown", (e) => {
@@ -365,9 +346,10 @@
     moveAwayForever(e.clientX, e.clientY);
   });
 
-  flow.slice(0,6).forEach((step, i) => {
-    document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
-  });
+  // stable progression
+  for(let i=0;i<6;i++){
+    document.getElementById(flow[i].stableId).addEventListener("click", () => showPage(i+1));
+  }
 
   document.getElementById("revealSorry").addEventListener("click", () => {
     document.getElementById("p7Prompt").style.display = "none";
@@ -383,7 +365,7 @@
   });
 
   window.addEventListener("resize", () => {
-    if(flow[idx].pageId !== "p7") placeMovingOnSlot();
+    if(flow[idx].pageId !== "p7") requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   });
 </script>
 
