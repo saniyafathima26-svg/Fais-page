@@ -15,18 +15,17 @@
   *{ box-sizing:border-box; }
   html,body{ height:100%; }
 
-  /* ✅ OLD FONT */
   body{
     margin:0;
     min-height:100vh;
     background: radial-gradient(circle at top, #141414, #000);
-    font-family:"Segoe UI", Arial, sans-serif; /* <- old */
+    font-family:"Segoe UI", Arial, sans-serif; /* ✅ old font */
     color:#fff;
     overflow:hidden;
     position:relative;
   }
 
-  /* Soft animated aura background */
+  /* soft aura background */
   body::before,
   body::after{
     content:"";
@@ -51,7 +50,7 @@
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
   }
 
-  /* Pages */
+  /* pages */
   .page{
     position: fixed;
     inset: 0;
@@ -70,33 +69,28 @@
     transform: translateY(0) scale(1);
   }
 
-  /* Card */
+  /* card */
   .card{
-    width:min(760px, 92vw);
+    width:min(820px, 92vw);
     padding:58px 42px;
     border-radius:30px;
     text-align:center;
     position: relative;
-
     background:
       radial-gradient(1200px 500px at 30% 0%, rgba(255,255,255,0.11), transparent 55%),
       radial-gradient(900px 450px at 80% 120%, rgba(255,255,255,0.07), transparent 60%),
       var(--glass);
-
     border:1px solid var(--glassBorder);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
-
-    box-shadow:
-      0 30px 90px var(--shadow),
-      inset 0 1px 0 rgba(255,255,255,0.12);
+    box-shadow: 0 30px 90px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
   .card::before{
     content:"";
     position:absolute;
-    inset: 0;
-    border-radius: 30px;
+    inset:0;
+    border-radius:30px;
     background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 35%);
     pointer-events:none;
   }
@@ -116,34 +110,33 @@
     letter-spacing:-0.4px;
     opacity:0.98;
   }
-  h2{ font-size: clamp(22px, 2.2vw, 30px); }
+  h2{ font-size: clamp(22px, 2.2vw, 34px); }
   h1{ font-size: clamp(28px, 3vw, 42px); }
 
+  /* ✅ locked: same line, no wrap */
   .btn-row{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:22px;
-    margin-top:18px;
+    gap:28px;
+    margin-top:26px;
     position:relative;
     z-index:3;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;     /* ✅ never wrap */
   }
 
+  /* ✅ locked sizing for perfect alignment */
   .btn{
-    padding:16px 44px;
+    width:240px;           /* ✅ fixed width */
+    height:64px;           /* ✅ fixed height */
     border:none;
     border-radius:999px;
-    font-size:18px;              /* close to your original */
+    font-size:18px;
     cursor:pointer;
     user-select:none;
-    min-width:220px;
-    height:62px;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     letter-spacing:.2px;
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     will-change: transform;
@@ -160,16 +153,18 @@
   .stable{
     background:#fff;
     color:#111;
-    box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.75);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* Invisible slot keeps perfect centering */
+  /* ✅ invisible slot keeps pair centered */
   .slot{
-    visibility: hidden;
-    pointer-events: none;
+    width:240px;           /* ✅ same as btn */
+    height:64px;           /* ✅ same as btn */
+    visibility:hidden;
+    pointer-events:none;
   }
 
-  /* Moving button positioned on slot */
+  /* moving button sits over slot */
   .moving{
     position: fixed;
     z-index: 9999;
@@ -187,7 +182,7 @@
   .white{
     background:#fff;
     color:#111;
-    box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.70);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.70);
   }
 
   .sorry-pic{
@@ -214,94 +209,94 @@
 
 <body>
 
-  <button id="moveBtn" class="btn moving"></button>
+<button id="moveBtn" class="btn moving"></button>
 
-  <div id="p1" class="page active">
-    <div class="card">
-      <h2>Do you really think you can find Sukoon without my bakbak?</h2>
+<div id="p1" class="page active">
+  <div class="card">
+    <h2>Do you really think you can find Sukoon without my bakbak?</h2>
+    <div class="btn-row">
+      <button id="s1" class="btn stable">NO</button>
+      <div id="m1" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p2" class="page">
+  <div class="card">
+    <h2>Are you angry with me?</h2>
+    <div class="btn-row">
+      <button id="s2" class="btn stable">NO</button>
+      <div id="m2" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p3" class="page">
+  <div class="card">
+    <h2>Do you think you listen to me?</h2>
+    <div class="btn-row">
+      <button id="s3" class="btn stable">YES</button>
+      <div id="m3" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p4" class="page">
+  <div class="card">
+    <h2>Am I your favourite?</h2>
+    <div class="btn-row">
+      <button id="s4" class="btn stable">YES</button>
+      <div id="m4" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p5" class="page">
+  <div class="card">
+    <h2>Sani’s way or Fais's way?</h2>
+    <div class="btn-row">
+      <button id="s5" class="btn stable">SANI’S WAY</button>
+      <div id="m5" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p6" class="page">
+  <div class="card">
+    <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
+    <div class="btn-row">
+      <button id="s6" class="btn stable">I SURRENDER</button>
+      <div id="m6" class="slot"></div>
+    </div>
+  </div>
+</div>
+
+<div id="p7" class="page">
+  <div class="card">
+    <div id="p7Prompt">
+      <h1>Sorry?</h1>
       <div class="btn-row">
-        <button id="s1" class="btn stable">NO</button>
-        <div id="m1" class="btn slot"></div>
+        <button id="revealSorry" class="btn stable">SORRY</button>
       </div>
     </div>
-  </div>
 
-  <div id="p2" class="page">
-    <div class="card">
-      <h2>Are you angry with me?</h2>
-      <div class="btn-row">
-        <button id="s2" class="btn stable">NO</button>
-        <div id="m2" class="btn slot"></div>
-      </div>
+    <div id="p7Reveal" class="hidden">
+      <h1>Sorry yaar…</h1>
+      <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
     </div>
   </div>
+</div>
 
-  <div id="p3" class="page">
-    <div class="card">
-      <h2>Do you think you listen to me?</h2>
-      <div class="btn-row">
-        <button id="s3" class="btn stable">YES</button>
-        <div id="m3" class="btn slot"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="p4" class="page">
-    <div class="card">
-      <h2>Am I your favourite?</h2>
-      <div class="btn-row">
-        <button id="s4" class="btn stable">YES</button>
-        <div id="m4" class="btn slot"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="p5" class="page">
-    <div class="card">
-      <h2>Sani’s way or Fais's way?</h2>
-      <div class="btn-row">
-        <button id="s5" class="btn stable">SANI’S WAY</button>
-        <div id="m5" class="btn slot"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="p6" class="page">
-    <div class="card">
-      <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
-      <div class="btn-row">
-        <button id="s6" class="btn stable">I SURRENDER</button>
-        <div id="m6" class="btn slot"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="p7" class="page">
-    <div class="card">
-      <div id="p7Prompt">
-        <h1>Sorry?</h1>
-        <div class="btn-row">
-          <button id="revealSorry" class="btn stable">SORRY</button>
-        </div>
-      </div>
-
-      <div id="p7Reveal" class="hidden">
-        <h1>Sorry yaar…</h1>
-        <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
-      </div>
-    </div>
-  </div>
-
-  <iframe
-    id="ytPlayer"
-    width="0"
-    height="0"
-    style="position:absolute; left:-9999px; top:-9999px;"
-    src=""
-    allow="autoplay; encrypted-media"
-    frameborder="0"
-    allowfullscreen>
-  </iframe>
+<iframe
+  id="ytPlayer"
+  width="0"
+  height="0"
+  style="position:absolute; left:-9999px; top:-9999px;"
+  src=""
+  allow="autoplay; encrypted-media"
+  frameborder="0"
+  allowfullscreen>
+</iframe>
 
 <script>
   const moveBtn = document.getElementById("moveBtn");
@@ -328,6 +323,13 @@
       { duration: ms, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
     );
     el._x = x; el._y = y;
+  }
+
+  function placeMovingOnSlot(){
+    const slot = document.getElementById(flow[idx].slotId);
+    if(!slot) return;
+    const r = slot.getBoundingClientRect();
+    animateMoveTo(moveBtn, r.left, r.top, 240);
   }
 
   function resetP7(){
@@ -357,15 +359,7 @@
     requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   }
 
-  // Sit on invisible slot initially (perfect alignment)
-  function placeMovingOnSlot(){
-    const slot = document.getElementById(flow[idx].slotId);
-    if(!slot) return;
-    const r = slot.getBoundingClientRect();
-    animateMoveTo(moveBtn, r.left, r.top, 240);
-  }
-
-  // ✅ Keep moving away on every click (does NOT come back)
+  // ✅ forever dodge: every click moves somewhere else and stays there
   function moveAwayForever(cx, cy){
     const pad = 12;
     const maxX = window.innerWidth  - moveBtn.offsetWidth  - pad;
