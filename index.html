@@ -51,7 +51,7 @@
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
   }
 
-  /* Subtle film grain (classy) */
+  /* Subtle film grain */
   .grain{
     position:absolute;
     inset:-30%;
@@ -71,7 +71,7 @@
     100%{ transform: translate(0,0); }
   }
 
-  /* Pages (fixed to viewport) */
+  /* Pages */
   .page{
     position: fixed;
     inset: 0;
@@ -90,7 +90,7 @@
     transform: translateY(0) scale(1);
   }
 
-  /* Card - premium glass */
+  /* Card */
   .card{
     width:min(760px, 92vw);
     padding:58px 42px;
@@ -112,7 +112,6 @@
       inset 0 1px 0 rgba(255,255,255,0.12);
   }
 
-  /* Elegant top highlight */
   .card::before{
     content:"";
     position:absolute;
@@ -122,7 +121,6 @@
     pointer-events:none;
   }
 
-  /* Cinematic intro for each card */
   .page.active .card{
     animation: cardIn .6s cubic-bezier(.2,.8,.2,1) both;
   }
@@ -132,7 +130,7 @@
   }
 
   h1,h2{
-    margin:0 0 18px;
+    margin:0 0 22px;
     font-weight:850;
     line-height:1.12;
     letter-spacing:-0.7px;
@@ -140,14 +138,6 @@
   }
   h2{ font-size: clamp(22px, 2.2vw, 30px); }
   h1{ font-size: clamp(28px, 3vw, 42px); }
-
-  .sub{
-    margin: 10px auto 0;
-    max-width: 560px;
-    opacity:0.78;
-    line-height:1.55;
-    font-size: 15.5px;
-  }
 
   .btn-row{
     display:flex;
@@ -197,14 +187,19 @@
       inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* Moving button */
+  /* Invisible slot that keeps alignment PERFECT (so buttons look centered as a pair) */
+  .slot{
+    visibility: hidden; /* takes space, but not visible */
+    pointer-events: none;
+  }
+
+  /* Moving button (positioned over the slot) */
   .moving{
     position: fixed;
     z-index: 9999;
-    left: 20px;
-    top: 20px;
+    left: 0;
+    top: 0;
     transform: translate3d(0,0,0);
-    transition: transform .22s ease, filter .18s ease;
   }
 
   .red{
@@ -255,14 +250,15 @@
 <body>
   <div class="grain"></div>
 
+  <!-- the dodging button (we position it over the invisible slot) -->
   <button id="moveBtn" class="btn moving"></button>
 
   <div id="p1" class="page active">
     <div class="card">
       <h2>Do you really think you can find Sukoon without my bakbak?</h2>
-      <p class="sub">Choose wisely. One button loves you. One button fears you.</p>
       <div class="btn-row">
         <button id="s1" class="btn stable">NO</button>
+        <div id="m1" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -270,9 +266,9 @@
   <div id="p2" class="page">
     <div class="card">
       <h2>Are you angry with me?</h2>
-      <p class="sub">Be honest. I can tell. 🙂</p>
       <div class="btn-row">
         <button id="s2" class="btn stable">NO</button>
+        <div id="m2" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -280,9 +276,9 @@
   <div id="p3" class="page">
     <div class="card">
       <h2>Do you think you listen to me?</h2>
-      <p class="sub">Answer carefully… there’s a correct answer.</p>
       <div class="btn-row">
         <button id="s3" class="btn stable">YES</button>
+        <div id="m3" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -290,9 +286,9 @@
   <div id="p4" class="page">
     <div class="card">
       <h2>Am I your favourite?</h2>
-      <p class="sub">No pressure. (Full pressure.)</p>
       <div class="btn-row">
         <button id="s4" class="btn stable">YES</button>
+        <div id="m4" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -300,9 +296,9 @@
   <div id="p5" class="page">
     <div class="card">
       <h2>Sani’s way or Fais's way?</h2>
-      <p class="sub">One path leads to peace. One leads to… more questions.</p>
       <div class="btn-row">
         <button id="s5" class="btn stable">SANI’S WAY</button>
+        <div id="m5" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -310,9 +306,9 @@
   <div id="p6" class="page">
     <div class="card">
       <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
-      <p class="sub">Ok last chance. Promise. (Maybe.)</p>
       <div class="btn-row">
         <button id="s6" class="btn stable">I SURRENDER</button>
+        <div id="m6" class="btn slot"></div>
       </div>
     </div>
   </div>
@@ -321,7 +317,6 @@
     <div class="card">
       <div id="p7Prompt">
         <h1>Sorry?</h1>
-        <p class="sub">Press it. Make it cinematic.</p>
         <div class="btn-row">
           <button id="revealSorry" class="btn stable">SORRY</button>
         </div>
@@ -329,7 +324,6 @@
 
       <div id="p7Reveal" class="hidden">
         <h1>Sorry yaar…</h1>
-        <p class="sub">Come back. Sukoon is waiting.</p>
         <img class="sorry-pic" src="IMG_6342.png" alt="Sorry" />
       </div>
     </div>
@@ -351,18 +345,17 @@
   const yt = document.getElementById("ytPlayer");
 
   const flow = [
-    { pageId:"p1", stableId:"s1", movingText:"YES",          movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", movingText:"YES",          movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", movingText:"NO",           movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", movingText:"NO",           movingColor:"red",   next:"p5" },
-    { pageId:"p5", stableId:"s5", movingText:"FAIS'S WAY",   movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", movingText:"NEVER",        movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, movingText:"",             movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",          movingColor:"red",   next:"p2" },
+    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",          movingColor:"red",   next:"p3" },
+    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",           movingColor:"white", next:"p4" },
+    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",           movingColor:"red",   next:"p5" },
+    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY",   movingColor:"red",   next:"p6" },
+    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",        movingColor:"white", next:"p7" },
+    { pageId:"p7", stableId:null, slotId:null, movingText:"",            movingColor:"",      next:null }
   ];
 
   let idx = 0;
 
-  // transform-based placement (smooth, no layout jank)
   function animateMoveTo(el, x, y, ms=220){
     el.animate(
       [
@@ -398,29 +391,22 @@
     moveBtn.classList.remove("red","white");
     moveBtn.classList.add(flow[idx].movingColor);
 
-    requestAnimationFrame(() => requestAnimationFrame(placeMovingNextToStable));
+    requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   }
 
-  // ✅ Place next to the stable option ONLY (no random movement)
-  function placeMovingNextToStable(){
-    const stable = document.getElementById(flow[idx].stableId);
-    if(!stable) return;
+  // ✅ Always sit perfectly on the invisible slot (keeps BOTH buttons centered)
+  function placeMovingOnSlot(){
+    const slot = document.getElementById(flow[idx].slotId);
+    if(!slot) return;
 
-    const r = stable.getBoundingClientRect();
-    const gap = 22;
+    const r = slot.getBoundingClientRect();
+    const x = r.left;
+    const y = r.top;
 
-    let x = r.right + gap;
-    let y = r.top + (r.height/2) - (moveBtn.offsetHeight/2);
-
-    const maxX = window.innerWidth  - moveBtn.offsetWidth  - 12;
-    const maxY = window.innerHeight - moveBtn.offsetHeight - 12;
-    x = Math.max(12, Math.min(x, maxX));
-    y = Math.max(12, Math.min(y, maxY));
-
-    animateMoveTo(moveBtn, x, y, 240);
+    animateMoveTo(moveBtn, x, y, 260);
   }
 
-  // ✅ Move ONLY when clicked (not on hover, not on proximity)
+  // ✅ Only move when clicked
   function moveAwayFromClick(cx, cy){
     const pad = 12;
     const maxX = window.innerWidth  - moveBtn.offsetWidth  - pad;
@@ -436,9 +422,8 @@
       if(!best || d2 > best.d2) best = {x, y, d2};
     }
 
-    animateMoveTo(moveBtn, best.x, best.y, 180);
-    // then it returns next to stable after a moment (feels playful but controlled)
-    setTimeout(() => placeMovingNextToStable(), 520);
+    animateMoveTo(moveBtn, best.x, best.y, 170);
+    setTimeout(() => placeMovingOnSlot(), 520); // comes back next to option
   }
 
   moveBtn.addEventListener("pointerdown", (e) => {
@@ -461,11 +446,11 @@
     moveBtn.style.display = "flex";
     moveBtn.textContent = flow[0].movingText;
     moveBtn.classList.add(flow[0].movingColor);
-    requestAnimationFrame(() => requestAnimationFrame(placeMovingNextToStable));
+    requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   });
 
   window.addEventListener("resize", () => {
-    if(flow[idx].pageId !== "p7") placeMovingNextToStable();
+    if(flow[idx].pageId !== "p7") placeMovingOnSlot();
   });
 </script>
 
