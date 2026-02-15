@@ -19,13 +19,12 @@
     margin:0;
     min-height:100vh;
     background: radial-gradient(circle at top, #141414, #000);
-    font-family:"Segoe UI", Arial, sans-serif; /* ✅ old font */
+    font-family:"Segoe UI", Arial, sans-serif;
     color:#fff;
     overflow:hidden;
     position:relative;
   }
 
-  /* soft aura background */
   body::before,
   body::after{
     content:"";
@@ -41,16 +40,12 @@
     animation: floatGlow 10s ease-in-out infinite alternate;
     pointer-events:none;
   }
-  body::after{
-    opacity:0.55;
-    animation-duration: 14s;
-  }
+  body::after{ opacity:0.55; animation-duration:14s; }
   @keyframes floatGlow{
     from{ transform: translate3d(-2%, -1%, 0) scale(1); }
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
   }
 
-  /* pages */
   .page{
     position: fixed;
     inset: 0;
@@ -69,7 +64,6 @@
     transform: translateY(0) scale(1);
   }
 
-  /* card */
   .card{
     width:min(820px, 92vw);
     padding:58px 42px;
@@ -95,9 +89,7 @@
     pointer-events:none;
   }
 
-  .page.active .card{
-    animation: cardIn .6s cubic-bezier(.2,.8,.2,1) both;
-  }
+  .page.active .card{ animation: cardIn .6s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes cardIn{
     from{ opacity:0; transform: translateY(12px) scale(.985); }
     to  { opacity:1; transform: translateY(0) scale(1); }
@@ -113,7 +105,7 @@
   h2{ font-size: clamp(22px, 2.2vw, 34px); }
   h1{ font-size: clamp(28px, 3vw, 42px); }
 
-  /* ✅ locked: same line, no wrap */
+  /* ✅ ALWAYS one line, never wrap */
   .btn-row{
     display:flex;
     justify-content:center;
@@ -122,13 +114,13 @@
     margin-top:26px;
     position:relative;
     z-index:3;
-    flex-wrap: nowrap;     /* ✅ never wrap */
+    flex-wrap: nowrap;
   }
 
-  /* ✅ locked sizing for perfect alignment */
+  /* ✅ identical button metrics so both look perfectly aligned */
   .btn{
-    width:240px;           /* ✅ fixed width */
-    height:64px;           /* ✅ fixed height */
+    width:240px;
+    height:64px;
     border:none;
     border-radius:999px;
     font-size:18px;
@@ -138,17 +130,14 @@
     align-items:center;
     justify-content:center;
     letter-spacing:.2px;
+    line-height:1;                /* ✅ prevents text baseline differences */
+    padding:0;                    /* ✅ consistent across button types */
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     will-change: transform;
   }
 
-  .btn:hover{
-    transform: translateY(-2px);
-    filter: brightness(1.05);
-  }
-  .btn:active{
-    transform: translateY(0px) scale(0.98);
-  }
+  .btn:hover{ transform: translateY(-2px); filter: brightness(1.05); }
+  .btn:active{ transform: translateY(0px) scale(0.98); }
 
   .stable{
     background:#fff;
@@ -156,15 +145,12 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* ✅ invisible slot keeps pair centered */
+  /* ✅ SLOT is ALSO a .btn (same exact box model) */
   .slot{
-    width:240px;           /* ✅ same as btn */
-    height:64px;           /* ✅ same as btn */
     visibility:hidden;
     pointer-events:none;
   }
 
-  /* moving button sits over slot */
   .moving{
     position: fixed;
     z-index: 9999;
@@ -199,11 +185,9 @@
     opacity: 0;
     animation: picIn .75s cubic-bezier(.2,.8,.2,1) forwards;
   }
-  @keyframes picIn{
-    to{ transform: translateY(0) scale(1); opacity: 1; }
-  }
+  @keyframes picIn{ to{ transform: translateY(0) scale(1); opacity: 1; } }
 
-  .hidden { display:none; }
+  .hidden{ display:none; }
 </style>
 </head>
 
@@ -216,7 +200,7 @@
     <h2>Do you really think you can find Sukoon without my bakbak?</h2>
     <div class="btn-row">
       <button id="s1" class="btn stable">NO</button>
-      <div id="m1" class="slot"></div>
+      <button id="m1" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -226,7 +210,7 @@
     <h2>Are you angry with me?</h2>
     <div class="btn-row">
       <button id="s2" class="btn stable">NO</button>
-      <div id="m2" class="slot"></div>
+      <button id="m2" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -236,7 +220,7 @@
     <h2>Do you think you listen to me?</h2>
     <div class="btn-row">
       <button id="s3" class="btn stable">YES</button>
-      <div id="m3" class="slot"></div>
+      <button id="m3" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -246,7 +230,7 @@
     <h2>Am I your favourite?</h2>
     <div class="btn-row">
       <button id="s4" class="btn stable">YES</button>
-      <div id="m4" class="slot"></div>
+      <button id="m4" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -256,7 +240,7 @@
     <h2>Sani’s way or Fais's way?</h2>
     <div class="btn-row">
       <button id="s5" class="btn stable">SANI’S WAY</button>
-      <div id="m5" class="slot"></div>
+      <button id="m5" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -266,7 +250,7 @@
     <h2>Faisss, ab convince ho gaye ki mai aur bolun? come backkk nowww :(</h2>
     <div class="btn-row">
       <button id="s6" class="btn stable">I SURRENDER</button>
-      <div id="m6" class="slot"></div>
+      <button id="m6" class="btn slot" aria-hidden="true" tabindex="-1"></button>
     </div>
   </div>
 </div>
@@ -303,13 +287,13 @@
   const yt = document.getElementById("ytPlayer");
 
   const flow = [
-    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",         movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",         movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",          movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",          movingColor:"red",   next:"p5" },
-    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY",  movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",       movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, slotId:null, movingText:"",           movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",        movingColor:"red",   next:"p2" },
+    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",        movingColor:"red",   next:"p3" },
+    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",         movingColor:"white", next:"p4" },
+    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",         movingColor:"red",   next:"p5" },
+    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY", movingColor:"red",   next:"p6" },
+    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",      movingColor:"white", next:"p7" },
+    { pageId:"p7", stableId:null, slotId:null, movingText:"",          movingColor:"",      next:null }
   ];
 
   let idx = 0;
@@ -329,7 +313,7 @@
     const slot = document.getElementById(flow[idx].slotId);
     if(!slot) return;
     const r = slot.getBoundingClientRect();
-    animateMoveTo(moveBtn, r.left, r.top, 240);
+    animateMoveTo(moveBtn, Math.round(r.left), Math.round(r.top), 240); /* ✅ pixel-perfect */
   }
 
   function resetP7(){
@@ -359,7 +343,6 @@
     requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   }
 
-  // ✅ forever dodge: every click moves somewhere else and stays there
   function moveAwayForever(cx, cy){
     const pad = 12;
     const maxX = window.innerWidth  - moveBtn.offsetWidth  - pad;
@@ -374,7 +357,7 @@
       const d2 = dx*dx + dy*dy;
       if(!best || d2 > best.d2) best = {x, y, d2};
     }
-    animateMoveTo(moveBtn, best.x, best.y, 170);
+    animateMoveTo(moveBtn, Math.round(best.x), Math.round(best.y), 170);
   }
 
   moveBtn.addEventListener("pointerdown", (e) => {
