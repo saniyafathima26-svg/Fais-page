@@ -15,15 +15,15 @@
   *{ box-sizing:border-box; }
   html,body{ height:100%; }
 
+  /* ✅ OLD FONT */
   body{
     margin:0;
     min-height:100vh;
     background: radial-gradient(circle at top, #141414, #000);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    font-family:"Segoe UI", Arial, sans-serif; /* <- old */
     color:#fff;
     overflow:hidden;
     position:relative;
-    letter-spacing: 0.2px;
   }
 
   /* Soft animated aura background */
@@ -49,26 +49,6 @@
   @keyframes floatGlow{
     from{ transform: translate3d(-2%, -1%, 0) scale(1); }
     to  { transform: translate3d( 2%,  1%, 0) scale(1.03); }
-  }
-
-  /* Subtle film grain */
-  .grain{
-    position:absolute;
-    inset:-30%;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
-    opacity:.06;
-    mix-blend-mode: overlay;
-    pointer-events:none;
-    z-index:1;
-    animation: grainMove 6s steps(2,end) infinite;
-  }
-  @keyframes grainMove{
-    0%{ transform: translate(0,0); }
-    25%{ transform: translate(-2%, 1%); }
-    50%{ transform: translate(1%, -2%); }
-    75%{ transform: translate(2%, 2%); }
-    100%{ transform: translate(0,0); }
   }
 
   /* Pages */
@@ -131,9 +111,9 @@
 
   h1,h2{
     margin:0 0 22px;
-    font-weight:850;
+    font-weight:800;
     line-height:1.12;
-    letter-spacing:-0.7px;
+    letter-spacing:-0.4px;
     opacity:0.98;
   }
   h2{ font-size: clamp(22px, 2.2vw, 30px); }
@@ -154,7 +134,7 @@
     padding:16px 44px;
     border:none;
     border-radius:999px;
-    font-size:16.2px;
+    font-size:18px;              /* close to your original */
     cursor:pointer;
     user-select:none;
     min-width:220px;
@@ -164,9 +144,7 @@
     align-items:center;
     justify-content:center;
 
-    letter-spacing:0.65px;
-    text-transform: uppercase;
-
+    letter-spacing:.2px;
     transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
     will-change: transform;
   }
@@ -180,20 +158,18 @@
   }
 
   .stable{
-    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.90));
+    background:#fff;
     color:#111;
-    box-shadow:
-      0 16px 40px rgba(0,0,0,0.35),
-      inset 0 1px 0 rgba(255,255,255,0.75);
+    box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.75);
   }
 
-  /* Invisible slot that keeps alignment PERFECT (so buttons look centered as a pair) */
+  /* Invisible slot keeps perfect centering */
   .slot{
-    visibility: hidden; /* takes space, but not visible */
+    visibility: hidden;
     pointer-events: none;
   }
 
-  /* Moving button (positioned over the slot) */
+  /* Moving button positioned on slot */
   .moving{
     position: fixed;
     z-index: 9999;
@@ -203,22 +179,17 @@
   }
 
   .red{
-    background: linear-gradient(135deg, #ff2b2b, #ff6b6b);
+    background:linear-gradient(45deg,#ff2b2b,#ff6b6b);
     color:#fff;
-    box-shadow:
-      0 18px 55px rgba(255,0,0,0.22),
-      inset 0 1px 0 rgba(255,255,255,0.18);
+    box-shadow:0 0 28px rgba(255,0,0,0.30);
   }
 
   .white{
-    background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.86));
+    background:#fff;
     color:#111;
-    box-shadow:
-      0 16px 40px rgba(0,0,0,0.35),
-      inset 0 1px 0 rgba(255,255,255,0.70);
+    box-shadow:0 16px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.70);
   }
 
-  /* last page picture */
   .sorry-pic{
     width: min(460px, 85vw);
     margin-top: 22px;
@@ -238,19 +209,11 @@
   }
 
   .hidden { display:none; }
-
-  /* Optional per-page accents */
-  #p2 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(255,80,120,0.09), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p3 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 90px rgba(80,160,255,0.09), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p5 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 100px rgba(255,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.12); }
-  #p7 .card{ box-shadow: 0 30px 90px var(--shadow), 0 0 130px rgba(255,120,180,0.12), inset 0 1px 0 rgba(255,255,255,0.12); }
 </style>
 </head>
 
 <body>
-  <div class="grain"></div>
 
-  <!-- the dodging button (we position it over the invisible slot) -->
   <button id="moveBtn" class="btn moving"></button>
 
   <div id="p1" class="page active">
@@ -345,18 +308,18 @@
   const yt = document.getElementById("ytPlayer");
 
   const flow = [
-    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",          movingColor:"red",   next:"p2" },
-    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",          movingColor:"red",   next:"p3" },
-    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",           movingColor:"white", next:"p4" },
-    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",           movingColor:"red",   next:"p5" },
-    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY",   movingColor:"red",   next:"p6" },
-    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",        movingColor:"white", next:"p7" },
-    { pageId:"p7", stableId:null, slotId:null, movingText:"",            movingColor:"",      next:null }
+    { pageId:"p1", stableId:"s1", slotId:"m1", movingText:"YES",         movingColor:"red",   next:"p2" },
+    { pageId:"p2", stableId:"s2", slotId:"m2", movingText:"YES",         movingColor:"red",   next:"p3" },
+    { pageId:"p3", stableId:"s3", slotId:"m3", movingText:"NO",          movingColor:"white", next:"p4" },
+    { pageId:"p4", stableId:"s4", slotId:"m4", movingText:"NO",          movingColor:"red",   next:"p5" },
+    { pageId:"p5", stableId:"s5", slotId:"m5", movingText:"FAIS'S WAY",  movingColor:"red",   next:"p6" },
+    { pageId:"p6", stableId:"s6", slotId:"m6", movingText:"NEVER",       movingColor:"white", next:"p7" },
+    { pageId:"p7", stableId:null, slotId:null, movingText:"",           movingColor:"",      next:null }
   ];
 
   let idx = 0;
 
-  function animateMoveTo(el, x, y, ms=220){
+  function animateMoveTo(el, x, y, ms=180){
     el.animate(
       [
         { transform: `translate3d(${el._x||0}px, ${el._y||0}px, 0)` },
@@ -394,26 +357,22 @@
     requestAnimationFrame(() => requestAnimationFrame(placeMovingOnSlot));
   }
 
-  // ✅ Always sit perfectly on the invisible slot (keeps BOTH buttons centered)
+  // Sit on invisible slot initially (perfect alignment)
   function placeMovingOnSlot(){
     const slot = document.getElementById(flow[idx].slotId);
     if(!slot) return;
-
     const r = slot.getBoundingClientRect();
-    const x = r.left;
-    const y = r.top;
-
-    animateMoveTo(moveBtn, x, y, 260);
+    animateMoveTo(moveBtn, r.left, r.top, 240);
   }
 
-  // ✅ Only move when clicked
-  function moveAwayFromClick(cx, cy){
+  // ✅ Keep moving away on every click (does NOT come back)
+  function moveAwayForever(cx, cy){
     const pad = 12;
     const maxX = window.innerWidth  - moveBtn.offsetWidth  - pad;
     const maxY = window.innerHeight - moveBtn.offsetHeight - pad;
 
     let best = null;
-    for(let i=0;i<10;i++){
+    for(let i=0;i<12;i++){
       const x = pad + Math.random() * (maxX - pad);
       const y = pad + Math.random() * (maxY - pad);
       const dx = x - cx;
@@ -421,17 +380,14 @@
       const d2 = dx*dx + dy*dy;
       if(!best || d2 > best.d2) best = {x, y, d2};
     }
-
     animateMoveTo(moveBtn, best.x, best.y, 170);
-    setTimeout(() => placeMovingOnSlot(), 520); // comes back next to option
   }
 
   moveBtn.addEventListener("pointerdown", (e) => {
     e.preventDefault();
-    moveAwayFromClick(e.clientX, e.clientY);
+    moveAwayForever(e.clientX, e.clientY);
   });
 
-  // stable progression
   flow.slice(0,6).forEach((step, i) => {
     document.getElementById(step.stableId).addEventListener("click", () => showPage(i+1));
   });
